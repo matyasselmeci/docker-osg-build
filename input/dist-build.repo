@@ -1,0 +1,7 @@
+[dist-build]
+name=dist-build
+baseurl=https://koji.opensciencegrid.org/mnt/koji/repos/dist-el$releasever-build/latest/$basearch/
+priority=100
+enabled=1
+gpgcheck=0
+includepkg=buildsys-* fetch-sources

@@ -1,8 +1,8 @@
-ARG EL=al8
+ARG DVER=9
 ARG OSG=3.6
-FROM hub.opensciencegrid.org/opensciencegrid/software-base:$OSG-$EL-development
-ARG EL
-ARG OSG
+FROM almalinux:$DVER
+ARG DVER=9
+ARG OSG=3.6
 ARG LOCALE=C.UTF-8
 
 LABEL name="osg-build"
@@ -11,35 +11,38 @@ LABEL maintainer="OSG Software <help@osg-htc.org>"
 ENV LANG=$LOCALE
 ENV LC_ALL=$LOCALE
 
-COPY input/osg-3.6-build.repo      /etc/yum.repos.d/
-COPY input/osg-23-main-build.repo  /etc/yum.repos.d/
+COPY input/dist-build.repo         /etc/yum.repos.d/
 
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
-  if [ $OSG = "3.6" ]; then \
-    repo=osg-3.6-build; \
-    devops_repo=devops-itb; \
-  else \
-    repo=osg-${OSG}-main-build; \
-    devops_repo=${OSG}-internal-development; \
-  fi; \
-  yum -y install --enablerepo=$repo --enablerepo=$devops_repo \
+ yum -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el${DVER}-release-latest.rpm \
+                epel-release \
+                dnf-plugins-core
+RUN dnf config-manager --enable osg-minefield
+RUN dnf config-manager --setopt install_weak_deps=false --save
+RUN if [ ${DVER} = 8   ]; then dnf config-manager --enable powertools; fi
+RUN if [ ${DVER} = 9   ]; then dnf config-manager --enable crb; fi
+RUN if [ ${OSG}  = 3.6 ]; then dnf config-manager --enable devops-itb; fi
+RUN if [ ${OSG}  = 23  ]; then dnf config-manager --enable osg-internal-minefield; fi
+
+RUN --mount=type=cache,target=/var/cache,sharing=locked \
+  yum -y install \
     buildsys-macros \
-    buildsys-build \
     buildsys-srpm-build \
     osg-build-deps
+
 RUN /usr/sbin/install-osg-build.sh
 
-RUN groupadd build
-RUN useradd -g build -G mock -m -d /home/build build
-RUN install -d -o build -g build -m 0755 /home/build/.osg-koji
-RUN ln -s .osg-koji /home/build/.koji
-RUN chown build: /home/build/.koji
+COPY --chmod=0755 input/command-wrapper.sh  /usr/local/bin/command-wrapper.sh
+COPY --chmod=0755 input/build-from-github   /usr/local/bin/build-from-github
+COPY              input/mock.cfg            /etc/mock/site-defaults.cfg
 
-COPY input/osg-ca-bundle.crt    /home/build/.osg-koji/osg-ca-bundle.crt
-COPY input/config               /home/build/.osg-koji/config
-COPY input/command-wrapper.sh   /usr/local/bin/command-wrapper.sh
-COPY input/mock.cfg             /etc/mock/site-defaults.cfg
-COPY input/build-from-github    /usr/local/bin/build-from-github
+RUN useradd  -u 1000 -G mock -d /home/build build
 
 USER build
+RUN mkdir /home/build/.osg-koji
+RUN ln -s .osg-koji /home/build/.koji
+
+COPY --chown=build:build input/osg-ca-bundle.crt  /home/build/.osg-koji/osg-ca-bundle.crt
+COPY --chown=build:build input/config             /home/build/.osg-koji/config
+
 WORKDIR /home/build
