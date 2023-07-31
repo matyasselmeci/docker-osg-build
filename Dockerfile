@@ -28,7 +28,8 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
   yum -y install \
     buildsys-macros \
     buildsys-srpm-build \
-    osg-build-deps
+    osg-build-deps \
+    osg-ca-certs
 
 RUN /usr/sbin/install-osg-build.sh
 
