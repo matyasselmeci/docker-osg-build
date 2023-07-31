@@ -1,22 +1,19 @@
 [koji]
 ;configuration for koji cli tool
-;url of XMLRPC server
-server = http://koji.opensciencegrid.org/kojihub
-;url of web interface
-weburl = http://koji.opensciencegrid.org/koji
-;url for koji file access
-topurl = http://koji.opensciencegrid.org
+srv = koji.opensciencegrid.org
 
-; use_old_ssl uses koji.compatrequests instead of requests
-; This allows our passphrase caching patches to work.
-; Set use_old_ssl=True unless using a grid proxy.
-use_old_ssl = True
+;url of XMLRPC server
+server = https://%(srv)s/kojihub
+;url of web interface
+weburl = https://%(srv)s/koji
+;url for koji file access
+topurl = https://%(srv)s/kojifiles
+
+;docker-osg-build uses a proxy so we don't need our passphrase caching patches
+use_old_ssl = False
 
 ;configuration for SSL authentication
 ;client certificate
 cert = ~/.osg-koji/client.crt
-;certificate of the CA that issued the client certificate
-ca = ~/.osg-koji/osg-ca-bundle.crt
 ;certificate of the CA that issued the HTTP server certificate
-serverca = ~/.osg-koji/osg-ca-bundle.crt
-
+serverca = /etc/pki/tls/certs/ca-bundle.crt
