@@ -3,6 +3,8 @@
 CONTAINER_NAME=osg-build
 IMAGE=opensciencegrid/osg-build
 MOUNT_POINT=/home/build/work
+INSIDE_UID=1000  # UID of "build" user inside the container
+INSIDE_GID=1000  # GID of "build" user inside the container
 
 die () {
     echo "$@" 1>&2
@@ -37,25 +39,61 @@ work_dir=$(cd "$work_dir" && pwd -P) || die "error getting absolute path of $wor
 
 set -eu
 
-hash=$(docker ps -a --latest --quiet --filter name=$CONTAINER_NAME)
-
-if [[ -z $hash ]]; then
-    echo -n 'creating docker container: '
-    docker create -it \
-                      --volume "$HOME/.globus":/home/build/.globus \
-                      --volume "$work_dir":"$MOUNT_POINT" \
-                      --name $CONTAINER_NAME \
-                      $IMAGE  && \
-        sleep 2
-else
-    echo "docker container \`$CONTAINER_NAME' already exists"
-    echo "Ignoring <work-dir>"
+# Check which container runtime we're using. If we have podman, use that --
+# docker is probably an alias anyway.
+docker=docker
+using_podman=false
+rootless_podman=false
+if command -v podman &>/dev/null; then
+    docker=podman
+    using_podman=true
+    if [[ $(id -u) -ne 0 ]]; then
+        rootless_podman=true
+    fi
 fi
 
-docker start $CONTAINER_NAME
+# Check if we already have a container with this name; if we do, then
+# we don't have to create it and set it up, just start it.
+hash=$($docker ps -a --latest --quiet --filter name=$CONTAINER_NAME)
+if [[ -n $hash ]]; then
+    container_already_exists=true
+else
+    container_already_exists=false
+fi
+
+if $container_already_exists; then
+    echo "container \`$CONTAINER_NAME' already exists"
+    echo "Ignoring <work-dir>"
+else
+    echo -n "creating container: "
+    if $rootless_podman; then
+        # We're using user namespaces; we need to make sure the current user
+        # is mapped to the "build" user inside the container for the permissions
+        # of the bind-mounted volumes to work.
+        userns_arg="--userns=keep-id:uid=${INSIDE_UID},gid=${INSIDE_GID}"
+    else
+        userns_arg=
+    fi
+
+    $docker create -it \
+                      --volume "$HOME/.globus":/root/globus:ro \
+                      --volume "$work_dir":"$MOUNT_POINT" \
+                      --name $CONTAINER_NAME \
+                      $userns_arg \
+                      $IMAGE  && \
+        sleep 2
+fi
+
+$docker start $CONTAINER_NAME
 sleep 2
 
-if [[ -z $hash ]]; then
-    docker exec $CONTAINER_NAME \
+# We mounted the grid credentials in a separate directory, so we can copy
+# them to ~build/.globus and have the permissions be correct.  Do that --
+# we need to be root inside.
+$docker exec -u 0 $CONTAINER_NAME  install    -m 0644 -o ${INSIDE_UID} -g ${INSIDE_GID} /root/globus/usercert.pem /home/build/.globus/usercert.pem
+$docker exec -u 0 $CONTAINER_NAME  install    -m 0600 -o ${INSIDE_UID} -g ${INSIDE_GID} /root/globus/userkey.pem /home/build/.globus/userkey.pem
+
+if ! $container_already_exists; then
+    $docker exec $CONTAINER_NAME \
         bash -c "echo '$work_dir' > /home/build/.work_dir"
 fi
