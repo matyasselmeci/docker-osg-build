@@ -3,7 +3,9 @@
 export X509_USER_PROXY=~/.osg-koji/client.crt
 
 get_proxy () {
-    voms-proxy-init -out "$X509_USER_PROXY"
+    #voms-proxy-init -out "$X509_USER_PROXY"
+    # ^^ gives me "verification failed"
+    grid-proxy-init -out "$X509_USER_PROXY"
 }
 
 get_proxy_if_needed () {
@@ -12,7 +14,7 @@ get_proxy_if_needed () {
         return
     fi
 
-    timeleft=$(voms-proxy-info -timeleft -file "$X509_USER_PROXY")
+    timeleft=$(grid-proxy-info -timeleft -file "$X509_USER_PROXY")
     ret=$?
 
     if [[ $ret -ne 0 || $timeleft -lt 60 ]]; then

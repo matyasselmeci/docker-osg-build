@@ -29,6 +29,8 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
     buildsys-macros \
     buildsys-srpm-build \
     osg-build-deps \
+    globus-proxy-utils \
+    # ^^ sorry, but voms-proxy-init gives me "verification failed" \
     osg-ca-certs
 
 RUN /usr/sbin/install-osg-build.sh
