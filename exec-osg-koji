@@ -3,7 +3,7 @@
 CONTAINER_NAME=osg-build
 
 t=
-[[ -t 0 ]] && t=-t
+[[ -t 0 && -t 1 ]] && t=-t
 
 docker=docker
 if command -v podman &>/dev/null; then
