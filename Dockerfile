@@ -43,7 +43,6 @@ RUN useradd  -u 1000 -G mock -d /home/build build
 
 USER build
 RUN mkdir /home/build/.osg-koji /home/build/.globus
-RUN ln -s .osg-koji /home/build/.koji
 
 COPY --chown=build:build input/osg-ca-bundle.crt  /home/build/.osg-koji/osg-ca-bundle.crt
 COPY --chown=build:build input/config             /home/build/.osg-koji/config
