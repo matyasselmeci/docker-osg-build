@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO if the container already exists, don't require a "work-dir" argument.
+#      if work-dir is passed anyway, error out if it doesn't match the saved work dir
+
 CONTAINER_NAME=osg-build
 IMAGE=opensciencegrid/osg-build
 MOUNT_POINT=/home/build/work
