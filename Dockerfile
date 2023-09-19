@@ -44,3 +44,5 @@ RUN mkdir /home/build/.osg-koji /home/build/.globus
 COPY --chown=build:build input/config             /home/build/.osg-koji/config
 
 WORKDIR /home/build
+
+ENV KOJI_HUB=koji.opensciencegrid.org

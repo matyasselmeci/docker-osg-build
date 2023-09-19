@@ -34,4 +34,8 @@ if [[ ! -e $certkey ]]; then
     umask 022
 fi
 
+if [[ ${KOJI_HUB} ]]; then
+    sed -i -e "s/^srv = .*/srv = ${KOJI_HUB}/" /home/build/.osg-koji/config
+fi
+
 exec "$@"
