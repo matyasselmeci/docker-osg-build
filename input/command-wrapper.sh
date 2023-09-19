@@ -45,4 +45,9 @@ if [[ $1 = osg-build ]]; then
     cd "$inside_wd"
 fi
 get_proxy_if_needed
+
+if [[ ${KOJI_HUB} ]]; then
+    sed -i -e "s/^srv = .*/srv = ${KOJI_HUB}/" /home/build/.osg-koji/config
+fi
+
 exec "$@"

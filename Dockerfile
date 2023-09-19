@@ -48,3 +48,5 @@ COPY --chown=build:build input/osg-ca-bundle.crt  /home/build/.osg-koji/osg-ca-b
 COPY --chown=build:build input/config             /home/build/.osg-koji/config
 
 WORKDIR /home/build
+
+ENV KOJI_HUB=koji.opensciencegrid.org
