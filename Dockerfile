@@ -28,10 +28,7 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
   yum -y install \
     buildsys-macros \
     buildsys-srpm-build \
-    osg-build-deps \
-    globus-proxy-utils \
-    # ^^ sorry, but voms-proxy-init gives me "verification failed" \
-    osg-ca-certs
+    osg-build-deps
 
 RUN /usr/sbin/install-osg-build.sh
 
@@ -44,7 +41,6 @@ RUN useradd  -u 1000 -G mock -d /home/build build
 USER build
 RUN mkdir /home/build/.osg-koji /home/build/.globus
 
-COPY --chown=build:build input/osg-ca-bundle.crt  /home/build/.osg-koji/osg-ca-bundle.crt
 COPY --chown=build:build input/config             /home/build/.osg-koji/config
 
 WORKDIR /home/build

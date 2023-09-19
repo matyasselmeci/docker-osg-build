@@ -1,27 +1,5 @@
 #!/bin/bash
 
-export X509_USER_PROXY=~/.osg-koji/client.crt
-
-get_proxy () {
-    #voms-proxy-init -out "$X509_USER_PROXY"
-    # ^^ gives me "verification failed"
-    grid-proxy-init -out "$X509_USER_PROXY"
-}
-
-get_proxy_if_needed () {
-    if [[ ! -f $X509_USER_PROXY ]]; then
-        get_proxy
-        return
-    fi
-
-    timeleft=$(grid-proxy-info -timeleft -file "$X509_USER_PROXY")
-    ret=$?
-
-    if [[ $ret -ne 0 || $timeleft -lt 60 ]]; then
-        get_proxy
-    fi
-}
-
 relpath () {
     python3 -c "import os,sys; print(os.path.relpath(sys.argv[1], sys.argv[2]))" "$1" "$2"
 }
@@ -44,5 +22,16 @@ if [[ $1 = osg-build ]]; then
     fi
     cd "$inside_wd"
 fi
-get_proxy_if_needed
+
+certkey=/dev/shm/certkey.pem
+
+if [[ ! -e $certkey ]]; then
+    echo >&2 "$certkey doesn't exist, making one"
+    umask 077
+    (cat ~/.globus/usercert.pem; echo; cat ~/.globus/userkey.pem) > "$certkey.tmp" &&
+        tr -d '\015' "$certkey.tmp" > "$certkey" &&
+        rm -f "$certkey.tmp"
+    umask 022
+fi
+
 exec "$@"
