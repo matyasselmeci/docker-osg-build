@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CONTAINER_NAME=osg-build
-IMAGE=opensciencegrid/osg-build
+IMAGE=matyasosg/osg-build
 MOUNT_POINT=/home/build/work
 INSIDE_UID=1000  # UID of "build" user inside the container
 INSIDE_GID=1000  # GID of "build" user inside the container

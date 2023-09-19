@@ -1,2 +1,2 @@
 #!/bin/bash
-exec docker build "$@" . --tag opensciencegrid/osg-build:latest
+exec docker build "$@" . --tag matyasosg/osg-build:latest
