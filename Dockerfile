@@ -15,7 +15,7 @@ ENV LC_ALL=$LOCALE
 
 COPY input/dist-build.repo         /etc/yum.repos.d/
 
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
  yum -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el${DVER}-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core
@@ -26,7 +26,7 @@ RUN if [ ${DVER} = 9   ]; then dnf config-manager --enable crb; fi
 RUN if [ ${OSG}  = 3.6 ]; then dnf config-manager --enable devops-itb; fi
 RUN if [ ${OSG}  = 23  ]; then dnf config-manager --enable osg-internal-minefield; fi
 
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
   yum -y install \
     buildsys-macros \
     buildsys-srpm-build \
