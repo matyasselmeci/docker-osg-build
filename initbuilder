@@ -81,9 +81,9 @@ if ! $container_already_exists; then
     fi
 
     if $mount_matyas_certkey; then
-        cred_volmount="$HOME/.globus:/root/globus:ro"
-    else
         cred_volmount="/dev/shm/matyas-certkey.pem:/dev/shm/certkey.pem:ro"
+    else
+        cred_volmount="$HOME/.globus:/root/globus:ro"
     fi
     $docker create -it \
                       --volume "$cred_volmount" \
