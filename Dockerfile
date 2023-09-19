@@ -4,6 +4,8 @@ FROM almalinux:$DVER
 ARG DVER=9
 ARG OSG=3.6
 ARG LOCALE=C.UTF-8
+ARG OSG_BUILD_BRANCH=master
+ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build
 
 LABEL name="osg-build"
 LABEL maintainer="OSG Software <help@osg-htc.org>"
@@ -28,9 +30,9 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
   yum -y install \
     buildsys-macros \
     buildsys-srpm-build \
-    osg-build-deps
+    'osg-build-deps >= 4' \
 
-RUN /usr/sbin/install-osg-build.sh
+RUN /usr/sbin/install-osg-build.sh "$OSG_BUILD_REPO" "$OSG_BUILD_BRANCH"
 
 COPY --chmod=0755 input/command-wrapper.sh  /usr/local/bin/command-wrapper.sh
 COPY --chmod=0755 input/build-from-github   /usr/local/bin/build-from-github
