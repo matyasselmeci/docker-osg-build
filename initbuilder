@@ -58,7 +58,6 @@ else
     container_already_exists=false
 fi
 
-if $container_already_exists; then
 if ! $container_already_exists; then
     if [[ ! $work_dir ]]; then
         die_with_usage
