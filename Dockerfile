@@ -18,7 +18,8 @@ COPY input/dist-build.repo         /etc/yum.repos.d/
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
  yum -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el${DVER}-release-latest.rpm \
                 epel-release \
-                dnf-plugins-core
+                dnf-plugins-core \
+                which
 RUN dnf config-manager --enable osg-minefield
 RUN dnf config-manager --setopt install_weak_deps=false --save
 RUN if [ ${DVER} = 8   ]; then dnf config-manager --enable powertools; fi
