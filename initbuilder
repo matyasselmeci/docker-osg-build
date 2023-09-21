@@ -73,10 +73,16 @@ if ! $container_already_exists; then
     else
         userns_arg=
     fi
+    if [[ -e /etc/localtime ]]; then
+        localtime_arg="--volume /etc/localtime:/etc/localtime:ro"
+    else
+        localtime_arg=""
+    fi
 
     $docker create -it \
                       --volume "$HOME/.globus":/root/globus:ro \
                       --volume "$work_dir":"$MOUNT_POINT" \
+                      $localtime_arg \
                       --name $CONTAINER_NAME \
                       $userns_arg \
                       $IMAGE  && \
