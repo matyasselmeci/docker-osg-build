@@ -79,6 +79,11 @@ if ! $container_already_exists; then
     else
         userns_arg=
     fi
+    if [[ -e /etc/localtime ]]; then
+        localtime_arg="--volume /etc/localtime:/etc/localtime:ro"
+    else
+        localtime_arg=""
+    fi
 
     if $mount_matyas_certkey; then
         cred_volmount="/dev/shm/matyas-certkey.pem:/dev/shm/certkey.pem:ro"
@@ -88,6 +93,7 @@ if ! $container_already_exists; then
     $docker create -i \
                       --volume "$cred_volmount" \
                       --volume "$work_dir":"$MOUNT_POINT" \
+                      $localtime_arg \
                       --name $CONTAINER_NAME \
                       $userns_arg \
                       $IMAGE  && \
