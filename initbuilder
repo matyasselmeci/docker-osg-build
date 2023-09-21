@@ -85,7 +85,7 @@ if ! $container_already_exists; then
     else
         cred_volmount="$HOME/.globus:/root/globus:ro"
     fi
-    $docker create -it \
+    $docker create -i \
                       --volume "$cred_volmount" \
                       --volume "$work_dir":"$MOUNT_POINT" \
                       --name $CONTAINER_NAME \
