@@ -34,16 +34,14 @@ IFS=  read -r work_dir  </home/build/.work_dir
 inside_wd=$(relpath "$outside_wd" "$work_dir")
 
 set -e
-if [[ $1 = osg-build ]]; then
-    cd ~/work
-    if [[ $inside_wd = ../* ]]; then
-        echo >&2 "The current directory is '$outside_wd'"
-        echo >&2 "which is not under the work directory '$work_dir'"
-        echo >&2 "osg-build commands must be run under the work directory"
-        exit 2
-    fi
-    cd "$inside_wd"
+cd ~/work
+if [[ $inside_wd = ../* ]]; then
+    echo >&2 "The current directory is '$outside_wd'"
+    echo >&2 "which is not under the work directory '$work_dir'"
+    echo >&2 "commands must be run under the work directory"
+    exit 2
 fi
+cd "$inside_wd"
 get_proxy_if_needed
 
 if [[ ${KOJI_HUB} ]]; then
