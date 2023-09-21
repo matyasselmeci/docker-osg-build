@@ -30,7 +30,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
   yum -y install \
     buildsys-macros \
     buildsys-srpm-build \
-    'osg-build-deps >= 4' \
+    'osg-build-deps >= 4'
 
 RUN /usr/sbin/install-osg-build.sh "$OSG_BUILD_REPO" "$OSG_BUILD_BRANCH"
 
