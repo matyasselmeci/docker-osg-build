@@ -9,9 +9,6 @@ weburl = https://%(srv)s/koji
 ;url for koji file access
 topurl = https://%(srv)s/kojifiles
 
-;docker-osg-build uses a proxy so we don't need our passphrase caching patches
-use_old_ssl = False
-
 ;configuration for SSL authentication
 ;client certificate
 cert = ~/.osg-koji/client.crt
