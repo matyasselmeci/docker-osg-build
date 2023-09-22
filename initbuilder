@@ -64,7 +64,7 @@ if ! $container_already_exists; then
     fi
     [[ -x $work_dir ]] || die "$work_dir not found or not readable"
     work_dir=$(cd "$work_dir" && pwd -P) || die "error getting absolute path of $work_dir"
-    echo -n "creating container: "
+    echo -n "Creating container $CONTAINER_NAME: "
     if $rootless_podman; then
         # We're using user namespaces; we need to make sure the current user
         # is mapped to the "build" user inside the container for the permissions
@@ -92,6 +92,9 @@ fi
 $docker start $CONTAINER_NAME
 sleep 2
 
+if $container_already_exists; then
+    echo "Container $CONTAINER_NAME already exists; work dir is $work_dir"
+fi
 if $container_already_exists && [[ $work_dir ]]; then  # make sure work_dir is same as inside
     real_work_dir=$(cd "$work_dir" 2>/dev/null && pwd -P)
     if [[ $real_work_dir ]]; then
