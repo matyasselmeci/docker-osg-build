@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
     3.6) dnf config-manager --enable devops-itb ;; \
     23) dnf config-manager --enable osg-internal-minefield ;; \
  esac && \
- yum -y install \
+ dnf -y install \
    buildsys-macros \
    buildsys-srpm-build \
    'osg-build-deps >= 4' \
