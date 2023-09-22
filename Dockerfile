@@ -12,7 +12,7 @@ COPY input /root/input
 
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
  cp /root/input/dist-build.repo /etc/yum.repos.d/ && \
- dnf -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el${DVER}-release-latest.rpm \
+ dnf -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el9-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core \
                 which \
