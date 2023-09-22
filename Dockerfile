@@ -19,7 +19,8 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
  yum -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el${DVER}-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core \
-                which
+                which \
+                krb5-workstation
 RUN dnf config-manager --enable osg-minefield
 RUN dnf config-manager --setopt install_weak_deps=false --save
 RUN if [ ${DVER} = 8   ]; then dnf config-manager --enable powertools; fi
@@ -49,3 +50,5 @@ COPY --chown=build:build input/config             /home/build/.osg-koji/config
 WORKDIR /home/build
 
 ENV KOJI_HUB=koji.opensciencegrid.org
+ENV KRB5CCNAME=FILE:/dev/shm/krb5cc_1000
+ENV KRB5_TRACE=/dev/stderr
