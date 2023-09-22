@@ -20,7 +20,8 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
                 epel-release \
                 dnf-plugins-core \
                 which \
-                krb5-workstation
+                krb5-workstation \
+                vim-enhanced
 RUN dnf config-manager --enable osg-minefield
 RUN dnf config-manager --setopt install_weak_deps=false --save
 RUN if [ ${DVER} = 8   ]; then dnf config-manager --enable powertools; fi
