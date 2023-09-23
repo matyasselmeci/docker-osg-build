@@ -51,7 +51,7 @@ if [[ $inside_wd = ../* ]]; then
         exit 2
     fi
 else
-    cd "~/work/$inside_wd"
+    cd ~/work/"$inside_wd"
 fi
 
 if [[ $1 == "osg-build" || $1 == "osg-koji" ]]; then
