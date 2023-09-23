@@ -1,0 +1,56 @@
+#!/bin/bash
+# osg-build-shell
+#
+# Shell into the docker-osg-build container (if it's up)
+
+CONTAINER_NAME=osg-build
+u=
+
+usage () {
+    {
+        echo "$(basename "$0") [-r|--root] [<command> [<arg>...]]"
+        echo
+        echo "Enters into the osg-build container to run a command."
+        echo "If the command is not specified, run bash."
+        echo "Runs the command as root if -r or --root is specified."
+    } >&2
+}
+
+case $1 in
+    -r|--root)
+        u=-u0
+        shift
+        ;;
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    -*)
+        echo >&2 "Unknown option $1."
+        usage
+        exit 2
+        ;;
+esac
+
+if [[ ! $1 ]]; then
+    command=bash
+else
+    command=$1
+    shift
+fi
+
+t=
+[[ -t 0 && -t 1 ]] && t=-t
+
+docker=docker
+if command -v podman &>/dev/null; then
+    docker=podman
+fi
+
+koji_hub_arg=
+if [[ $KOJI_HUB ]]; then
+    koji_hub_arg=--env=KOJI_HUB=$KOJI_HUB
+fi
+
+$docker exec -i $t $u $koji_hub_arg $CONTAINER_NAME \
+    /usr/local/bin/command-wrapper.sh --no-strict-work-dir "$(pwd -P)" "$command" "$@"
