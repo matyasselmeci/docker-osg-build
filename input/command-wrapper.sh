@@ -14,7 +14,8 @@ fi
 
 
 if [[ -x /home/build/work ]]; then
-    # we can't enter the work dir anyway; just run the command
+    # we can't enter the work dir anyway; ignore it and just run the command
+    shift
     exec "$@"
 fi
 
