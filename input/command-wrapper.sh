@@ -7,9 +7,15 @@ relpath () {
 
 strict_work_dir=true
 if [[ $1 = "--no-strict-work-dir" ]]; then
-    # don't error out if we're outside the working directory
+    # don't error out if we're outside the work directory
     strict_work_dir=false
     shift
+fi
+
+
+if [[ -x /home/build/work ]]; then
+    # we can't enter the work dir anyway; just run the command
+    exec "$@"
 fi
 
 
@@ -29,7 +35,7 @@ if [[ $inside_wd = ../* ]]; then
         exit 2
     fi
 else
-    cd ~/work/"$inside_wd"
+    cd /home/build/work/"$inside_wd"
 fi
 
 if [[ $1 == "osg-build" || $1 == "osg-koji" ]]; then
