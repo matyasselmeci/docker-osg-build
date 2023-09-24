@@ -1,13 +1,14 @@
 [koji]
 ;configuration for koji cli tool
-srv = koji.opensciencegrid.org
+koji_hub = koji.opensciencegrid.org
+koji_web = %(koji_hub)s
 
 ;url of XMLRPC server
-server = https://%(srv)s/kojihub
+server = https://%(koji_hub)s/kojihub
 ;url of web interface
-weburl = https://%(srv)s/koji
+weburl = https://%(koji_web)s/koji
 ;url for koji file access
-topurl = https://%(srv)s/kojifiles
+topurl = https://%(koji_hub)s/kojifiles
 
 ;configuration for SSL authentication
 ;client certificate

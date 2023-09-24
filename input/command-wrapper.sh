@@ -59,7 +59,7 @@ if [[ $1 == "osg-build" || $1 == "osg-koji" ]]; then
 fi
 
 if [[ ${KOJI_HUB} ]]; then
-    sed -i -e "s/^srv = .*/srv = ${KOJI_HUB}/" /home/build/.osg-koji/config
+    sed -i -e "s/^koji_hub = .*/koji_hub = ${KOJI_HUB}/" /home/build/.osg-koji/config
 fi
 
 exec "$@"
