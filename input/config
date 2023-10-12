@@ -10,10 +10,8 @@ weburl = https://%(koji_web)s/koji
 ;url for koji file access
 topurl = https://%(koji_hub)s/kojifiles
 
-authtype = ssl
+authtype = kerberos
+;principal =
 
-;configuration for SSL authentication
-;client certificate
-cert = ~/.osg-koji/client.crt
 ;certificate of the CA that issued the HTTP server certificate
 serverca = /etc/pki/tls/certs/ca-bundle.crt
