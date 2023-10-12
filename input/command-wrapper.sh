@@ -1,26 +1,5 @@
 #!/bin/bash
 
-export X509_USER_PROXY=~/.osg-koji/client.crt
-
-get_proxy () {
-    #voms-proxy-init -out "$X509_USER_PROXY"
-    # ^^ gives me "verification failed"
-    grid-proxy-init -out "$X509_USER_PROXY"
-}
-
-get_proxy_if_needed () {
-    if [[ ! -f $X509_USER_PROXY ]]; then
-        get_proxy
-        return
-    fi
-
-    timeleft=$(grid-proxy-info -timeleft -file "$X509_USER_PROXY")
-    ret=$?
-
-    if [[ $ret -ne 0 || $timeleft -lt 60 ]]; then
-        get_proxy
-    fi
-}
 
 relpath () {
     python3 -c "import os,sys; print(os.path.relpath(sys.argv[1], sys.argv[2]))" "$1" "$2"
@@ -59,10 +38,6 @@ if [[ $inside_wd = ../* ]]; then
     fi
 else
     cd /home/build/work/"$inside_wd"
-fi
-
-if [[ $1 == "osg-build" || $1 == "osg-koji" ]]; then
-    get_proxy_if_needed
 fi
 
 if [[ ${KOJI_HUB} ]]; then
