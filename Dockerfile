@@ -38,7 +38,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
    tini \
    && \
    useradd -u 1000 -G mock -d /home/build build && \
-   install -d -o build -g build /home/build/.osg-koji /home/build/.globus
+   install -d -o build -g build /home/build/.osg-koji
 
 ARG OSG_BUILD_BRANCH=V2-branch
 ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build

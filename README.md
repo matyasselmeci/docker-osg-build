@@ -15,8 +15,6 @@ checkouts of OSG packages -- mounted inside the container.
 Requirements
 ============
 * Docker
-* Your grid cert and key in `~/.globus/usercert.pem` and `~/.globus/userkey.pem`
-  as files (not symlinks)
 
 
 Instructions
@@ -34,10 +32,8 @@ Starting up the image
 ---------------------
 
 `docker-osg-build` uses a Docker container that runs in the background. Your
-`~/.globus` directory and 'work directory,' which contains the packages you are
-working with, will be mounted inside the container. You must have a valid,
-current user cert and key inside `~/.globus/usercert.pem` and
-`~/.globus/userkey.pem` to run `docker-osg-build`.
+ 'work directory,' which contains the packages you are
+working with, will be mounted inside the container.
 
 To create the Docker container, run:
 
@@ -66,8 +62,8 @@ container. You may wish to make shell aliases for them, as in:
     alias osg-build=~/docker-osg-build/exec-osg-build
     alias osg-koji=~/docker-osg-build/exec-osg-koji
 
-The scripts will create a grid certificate (if necessary) and run `osg-koji` or
-`osg-build` inside the container, with the arguments provided.
+The scripts will run `osg-koji` or `osg-build` inside the container, with the
+arguments provided.
 
 As long as the packages you are building are inside `<work-dir>` specified
 above, `osg-build` will be able to read and write files inside the package

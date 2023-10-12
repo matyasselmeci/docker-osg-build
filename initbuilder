@@ -26,10 +26,6 @@ usage_and_die () {
     exit 2
 }
 
-[[ -r $HOME/.globus/usercert.pem ]] || die "~/.globus/usercert.pem not found or not readable"
-[[ -r $HOME/.globus/userkey.pem ]] || die "~/.globus/userkey.pem not found or not readable"
-[[ -L $HOME/.globus/usercert.pem ]] && die "~/.globus/usercert.pem is a symlink; turn it into a regular file"
-[[ -L $HOME/.globus/userkey.pem ]] && die "~/.globus/userkey.pem is a symlink; turn it into a regular file"
 
 work_dir=${1-}
 
@@ -80,7 +76,6 @@ if ! $container_already_exists; then
     fi
 
     $docker create -i \
-                      --volume "$HOME/.globus":/root/globus:ro \
                       --volume "$work_dir":"$MOUNT_POINT" \
                       $localtime_arg \
                       --name $CONTAINER_NAME \
@@ -106,12 +101,6 @@ if $container_already_exists && [[ $work_dir ]]; then  # make sure work_dir is s
         fi
     fi
 fi
-
-# We mounted the grid credentials in a separate directory, so we can copy
-# them to ~build/.globus and have the permissions be correct.  Do that --
-# we need to be root inside.
-$docker exec -u 0 $CONTAINER_NAME  install    -m 0644 -o ${INSIDE_UID} -g ${INSIDE_GID} /root/globus/usercert.pem /home/build/.globus/usercert.pem
-$docker exec -u 0 $CONTAINER_NAME  install    -m 0600 -o ${INSIDE_UID} -g ${INSIDE_GID} /root/globus/userkey.pem /home/build/.globus/userkey.pem
 
 if ! $container_already_exists; then
     $docker exec $CONTAINER_NAME \
