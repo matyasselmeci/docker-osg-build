@@ -22,6 +22,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
                 rpm-sign \
                 pinentry \
                 python-unversioned-command \
+                krb5-workstation \
                 && \
  dnf config-manager --enable osg-minefield && \
  dnf config-manager --setopt install_weak_deps=false --save && \
@@ -35,14 +36,11 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
    buildsys-srpm-build \
    'osg-build-deps >= 4' \
    tini \
-   globus-proxy-utils \
-   # ^^ sorry, but voms-proxy-init gives me "verification failed" \
-   osg-ca-certs && \
-   \
+   && \
    useradd -u 1000 -G mock -d /home/build build && \
    install -d -o build -g build /home/build/.osg-koji /home/build/.globus
 
-ARG OSG_BUILD_BRANCH=master
+ARG OSG_BUILD_BRANCH=V2-branch
 ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build
 
 ARG RANDOM=
@@ -65,5 +63,8 @@ WORKDIR /home/build
 
 # The koji-hub server to use
 ENV KOJI_HUB=
+
+# Kerberos cache
+ENV KRB5CCNAME=DIR:/dev/shm/krb5cc_1000
 
 CMD tini -- sleep infinity
