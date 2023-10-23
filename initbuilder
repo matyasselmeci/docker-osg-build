@@ -105,4 +105,8 @@ fi
 if ! $container_already_exists; then
     $docker exec $CONTAINER_NAME \
         bash -c "echo '$work_dir' > /home/build/.work_dir"
+    if [[ -t 0 && -t 1 ]]; then
+        # We're connected to a terminal; we can run setup
+        $docker exec -i -t $CONTAINER_NAME osg-koji setup
+    fi
 fi
