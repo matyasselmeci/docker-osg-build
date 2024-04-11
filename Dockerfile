@@ -23,6 +23,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
                 pinentry \
                 python-unversioned-command \
                 krb5-workstation \
+                sssd-client \
                 && \
  dnf config-manager --enable osg-minefield && \
  dnf config-manager --setopt install_weak_deps=false --save && \
