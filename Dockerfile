@@ -41,6 +41,10 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
    useradd -u 1000 -G mock -d /home/build build && \
    install -d -o build -g build /home/build/.osg-koji
 
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+ dnf -y install gdb && \
+ dnf -y debuginfo-install 'krb5*' glibc keyutils-libs libcom_err libselinux openssl-libs pcre2 zlib
+
 ARG OSG_BUILD_BRANCH=V2-branch
 ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build
 
