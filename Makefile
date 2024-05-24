@@ -1,4 +1,4 @@
-OSG_BUILD_IMAGE ?= opensciencegrid/osg-build:latest
+OSG_BUILD_IMAGE ?= opensciencegrid/osg-build:v2
 OSG_BUILD_REPO ?= opensciencegrid
 OSG_BUILD_BRANCH ?= V2-branch
 DOCKER ?= docker
