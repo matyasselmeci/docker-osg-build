@@ -1,8 +1,10 @@
-OSG_BUILD_IMAGE ?= opensciencegrid/osg-build:v2
+OSG_BUILD_IMAGE ?= osg-htc/osg-build:v2
+OSG_BUILD_IMAGE_OLD ?= opensciencegrid/osg-build:v2
 OSG_BUILD_REPO ?= opensciencegrid
 OSG_BUILD_BRANCH ?= V2-branch
 DOCKER ?= docker
 SINGULARITY ?= singularity
+REGISTRY ?= hub.opensciencegrid.org
 
 define dobuild =
 DOCKER="$(DOCKER)" \
@@ -12,9 +14,11 @@ OSG_BUILD_BRANCH="$(OSG_BUILD_BRANCH)" \
 ./buildbuilder
 endef
 
-.PHONY: all clean
+.PHONY: all push-all clean push-sif push-docker
 
 all: osg_build.sif osg_build.tar
+
+push-all: push-sif push-docker
 
 clean:
 	-rm -f osg_build.tar osg_build.sif osg_build.tar.new
@@ -30,6 +34,16 @@ osg_build.tar: Dockerfile input/* buildbuilder
 
 osg_build.sif: osg_build.def osg_build.tar
 	"$(SINGULARITY)" build $@ $<
+
+push-docker: osg_build.tar
+	$(DOCKER) login $(REGISTRY)
+	$(DOCKER) tag $(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE_OLD)
+	$(DOCKER) push $(REGISTRY)/$(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE_OLD)
+
+push-sif: osg_build.sif
+	read -p "Username for $(REGISTRY): " && $(SINGULARITY) registry login --username $$REPLY oras://$(REGISTRY)
+	$(SINGULARITY) push $< oras://hub.opensciencegrid.org/$(OSG_BUILD_IMAGE)
+	$(SINGULARITY) push $< oras://hub.opensciencegrid.org/$(OSG_BUILD_IMAGE_OLD)
 
 .PHONY: build
 build:
