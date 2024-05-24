@@ -1,5 +1,5 @@
 FROM almalinux:9
-ARG OSG=3.6
+ARG OSG=23
 ARG LOCALE=C.UTF-8
 
 LABEL name="osg-build"
@@ -15,7 +15,8 @@ COPY input /root/input
 
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
  cp /root/input/dist-build.repo /etc/yum.repos.d/ && \
- dnf -y install https://repo.opensciencegrid.org/osg/${OSG}/osg-${OSG}-el9-release-latest.rpm \
+ if [ $OSG = "3.6" ]; then OSGSTR=3.6; else OSGSTR=${OSG}-main; fi && \
+ dnf -y install https://repo.opensciencegrid.org/osg/${OSGSTR}/osg-${OSGSTR}-el9-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core \
                 which \
