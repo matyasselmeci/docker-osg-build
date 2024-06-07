@@ -66,8 +66,10 @@ if ! $container_already_exists; then
         # is mapped to the "build" user inside the container for the permissions
         # of the bind-mounted volumes to work.
         userns_arg="--userns=keep-id:uid=${INSIDE_UID},gid=${INSIDE_GID}"
+        echo -n "Creating container $CONTAINER_NAME with user namespaces (this may take some time): "
     else
         userns_arg=
+        echo -n "Creating container $CONTAINER_NAME: "
     fi
     if [[ -e /etc/localtime ]]; then
         localtime_arg="--volume /etc/localtime:/etc/localtime:ro"
