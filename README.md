@@ -1,31 +1,33 @@
 docker-osg-build
 ================
 
-This is a Docker wrapper around `osg-build` and `osg-koji`, the two primary
-tools for doing and getting information about builds in the OSG's Koji build
-system. The original scripts are intended for use on RHEL 6- and 7-compatible
-systems and have lots of Linux- and Red Hat-specific dependencies that aren't
-available on e.g. macOS systems.
+This repo contains a Docker wrapper around `osg-build` and `osg-koji`, the two
+primary tools for doing and getting information about builds in the OSG's Koji
+build system.
 
-The model of these wrapper scripts is to start up a persistent Docker
-container with your 'work directory' -- the directory that contains your
-checkouts of OSG packages -- mounted inside the container.
+The model of these wrapper scripts is to start up a persistent Docker container
+with your 'work directory' -- the directory that contains your checkouts of OSG
+packages -- mounted inside the container.
+
+This repo also contains a Singularity/Apptainer image that can be used
+interactively to run `osg-build` and `osg-koji`.
 
 
 Requirements
 ============
-* Docker
+* Docker/Podman for docker-osg-build
+* Apptainer/Singularity for osg_build.sif
 
 
-Instructions
-============
+Instructions (Docker/Podman)
+============================
 
 Docker image
 ------------
 
 Before using these scripts, you will need to pull the Docker image from
-DockerHub via `docker pull opensciencegrid/osg-build`.  Alternatively, you can
-run the `buildbuilder` script to build it locally.
+OSG Hub via `docker pull hub.opensciencegrid.org/osg-htc/osg-build`.
+Alternatively, you can run the `buildbuilder` script to build it locally.
 
 
 Starting up the image
@@ -70,8 +72,8 @@ above, `osg-build` will be able to read and write files inside the package
 directories.
 
 
-Example usage
-=============
+Example usage (Docker/Podman)
+=============================
 
 (do once):
 
@@ -84,32 +86,4 @@ Subsequent operations:
     cd ~/work/redhat/osg-ce
     ~/docker-osg-build/exec-osg-build koji --scratch --getfiles .
     ~/docker-osg-build/exec-osg-koji list-tagged osg-3.4-el7-development
-
-Alternatively, test builds in Travis-CI:
-
-    sudo: required
-    env:
-      - REPO_NAME=${TRAVIS_REPO_SLUG#*/}
-        GET_FILES=false
-
-    git:
-      depth: false
-      quiet: true
-
-    services:
-      - docker
-
-    before_install:
-      - sudo apt-get update
-      - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
-      - sudo service docker restart
-      - sleep 5
-      - sudo docker pull opensciencegrid/osg-build
-
-    script:
-      - docker run -v $(pwd):/$REPO_NAME -e REPO_NAME=$REPO_NAME -e GET_FILES=$GET_FILES --cap-add=SYS_ADMIN opensciencegrid/osg-build build-from-github
-
-If you have Source files listed as URLs in your spec file and want to
-download them for your Travis-CI builds, set `GET_FILES=true` in the `env`
-section of .travis.yml.
 
