@@ -38,7 +38,8 @@ osg_build.sif: osg_build.def osg_build.tar
 push-docker: osg_build.tar
 	$(DOCKER) login $(REGISTRY)
 	$(DOCKER) tag $(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE_OLD)
-	$(DOCKER) push $(REGISTRY)/$(OSG_BUILD_IMAGE) $(REGISTRY)/$(OSG_BUILD_IMAGE_OLD)
+	$(DOCKER) push $(REGISTRY)/$(OSG_BUILD_IMAGE)
+	$(DOCKER) push $(REGISTRY)/$(OSG_BUILD_IMAGE_OLD)
 
 push-sif: osg_build.sif
 	read -p "Username for $(REGISTRY): " && $(SINGULARITY) registry login --username $$REPLY oras://$(REGISTRY)
@@ -48,3 +49,4 @@ push-sif: osg_build.sif
 .PHONY: build
 build:
 	$(dobuild)
+	$(DOCKER) tag $(OSG_BUILD_IMAGE) $(OSG_BUILD_IMAGE_OLD)

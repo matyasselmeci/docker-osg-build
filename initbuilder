@@ -1,6 +1,6 @@
 #!/bin/bash
 
-: "${OSG_BUILD_IMAGE:=opensciencegrid/osg-build}"
+: "${OSG_BUILD_IMAGE:=osg-htc/osg-build:v2}"
 CONTAINER_NAME=osg-build
 MOUNT_POINT=/home/build/work
 INSIDE_UID=1000  # UID of "build" user inside the container
