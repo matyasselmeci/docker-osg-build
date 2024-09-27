@@ -15,8 +15,7 @@ COPY input /root/input
 
 RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  cp /root/input/dist-build.repo /etc/yum.repos.d/ && \
- if [ $OSG = "3.6" ]; then OSGSTR=3.6; else OSGSTR=${OSG}-main; fi && \
- dnf -y install https://repo.opensciencegrid.org/osg/${OSGSTR}/osg-${OSGSTR}-el9-release-latest.rpm \
+ dnf -y install https://repo.opensciencegrid.org/osg/${OSG}-main/osg-${OSG}-main-el9-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core \
                 which \
@@ -26,13 +25,10 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
                 krb5-workstation \
                 sssd-client \
                 && \
+ crb enable && \
  dnf config-manager --enable osg-minefield && \
+ dnf config-manager --enable osg-internal-minefield && \
  dnf config-manager --setopt install_weak_deps=false --save && \
- dnf config-manager --enable crb && \
- case $OSG in \
-    3.6) dnf config-manager --enable devops-itb ;; \
-    23) dnf config-manager --enable osg-internal-minefield ;; \
- esac && \
  rm -f /etc/yum.repos.d/osg-next*.repo && \
  dnf -y install \
    buildsys-macros \
