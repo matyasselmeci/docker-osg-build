@@ -1,4 +1,4 @@
-FROM almalinux:9
+FROM almalinux:9 AS os
 ARG OSG=23
 ARG LOCALE=C.UTF-8
 
@@ -10,6 +10,9 @@ ENV LC_ALL=$LOCALE
 
 RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  dnf -y update
+
+FROM os AS dependencies
+ARG OSG=23
 
 COPY input /root/input
 
@@ -38,6 +41,8 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
    && \
    useradd -u 1000 -G mock -d /home/build build && \
    install -d -o build -g build /home/build/.osg-koji
+
+FROM dependencies AS osg-build
 
 ARG OSG_BUILD_BRANCH=V2-branch
 ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build

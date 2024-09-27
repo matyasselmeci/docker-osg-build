@@ -4,10 +4,6 @@ no_cache=
 if [[ $NO_CACHE ]]; then
     no_cache=--no-cache
 fi
-squash=--squash
-if [[ $NO_SQUASH ]]; then
-    squash=
-fi
 
 : "${OSG_BUILD_IMAGE:=osg-htc/osg-build:v2}"
 : "${OSG_BUILD_REPO:=opensciencegrid}"
@@ -24,6 +20,5 @@ set -x
     --build-arg=RANDOM="${RANDOM}" \
     --tag "${OSG_BUILD_IMAGE}" \
     --label git.describe="$git_describe" \
-    $squash \
     -f Dockerfile \
     "$@"
