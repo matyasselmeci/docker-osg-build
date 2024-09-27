@@ -27,10 +27,10 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
                 sssd-client \
                 nano \
                 && \
+ crb enable && \
  dnf config-manager --enable osg-minefield && \
- dnf config-manager --setopt install_weak_deps=false --save && \
- dnf config-manager --enable crb && \
  dnf config-manager --enable osg-internal-minefield && \
+ dnf config-manager --setopt install_weak_deps=false --save && \
  rm -f /etc/yum.repos.d/osg-next*.repo && \
  dnf -y install \
    buildsys-macros \
