@@ -8,12 +8,12 @@ LABEL maintainer="OSG Software <help@osg-htc.org>"
 ENV LANG=$LOCALE
 ENV LC_ALL=$LOCALE
 
-RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  dnf -y update
 
 COPY input /root/input
 
-RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  cp /root/input/dist-build.repo /etc/yum.repos.d/ && \
  if [ $OSG = "3.6" ]; then OSGSTR=3.6; else OSGSTR=${OSG}-main; fi && \
  dnf -y install https://repo.opensciencegrid.org/osg/${OSGSTR}/osg-${OSGSTR}-el9-release-latest.rpm \
