@@ -1,5 +1,5 @@
 FROM almalinux:9
-ARG OSG=23
+ARG OSG=24
 ARG LOCALE=C.UTF-8
 
 LABEL name="osg-build"
@@ -15,8 +15,8 @@ COPY input /root/input
 
 RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  cp /root/input/dist-build.repo /etc/yum.repos.d/ && \
- if [ $OSG = "3.6" ]; then OSGSTR=3.6; else OSGSTR=${OSG}-main; fi && \
- dnf -y install https://repo.opensciencegrid.org/osg/${OSGSTR}/osg-${OSGSTR}-el9-release-latest.rpm \
+ OSGSTR=${OSG}-main && \
+ dnf -y install https://repo.osg-htc.org/osg/${OSGSTR}/osg-${OSGSTR}-el9-release-latest.rpm \
                 epel-release \
                 dnf-plugins-core \
                 which \
@@ -29,10 +29,7 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
  dnf config-manager --enable osg-minefield && \
  dnf config-manager --setopt install_weak_deps=false --save && \
  dnf config-manager --enable crb && \
- case $OSG in \
-    3.6) dnf config-manager --enable devops-itb ;; \
-    23) dnf config-manager --enable osg-internal-minefield ;; \
- esac && \
+ dnf config-manager --enable osg-internal-minefield && \
  rm -f /etc/yum.repos.d/osg-next*.repo && \
  dnf -y install \
    buildsys-macros \
