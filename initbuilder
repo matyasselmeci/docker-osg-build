@@ -77,11 +77,13 @@ if ! $container_already_exists; then
         localtime_arg=""
     fi
 
+    # TODO Using mock requires CAP_SYS_ADMIN
     $docker create -i \
                       --volume "$work_dir":"$MOUNT_POINT" \
                       $localtime_arg \
                       --name $CONTAINER_NAME \
                       $userns_arg \
+                      `#--cap-add SYS_ADMIN` \
                       "$OSG_BUILD_IMAGE"  && \
         sleep 2
 fi
