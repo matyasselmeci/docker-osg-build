@@ -32,9 +32,10 @@ help:
 	$(echotbl) "all"  "Build both the Docker image and the SIF"
 	$(echotbl) "push-docker"  "Push the Docker image to a registry using the docker:// protocol"
 	$(echotbl) "push-sif"  "Push the Singularity image to registry using the oras:// protocol"
+	$(echotbl) "" "The image in the registry will have a '-sif' suffix"
 	$(echotbl) "push-all"  "Push both the Docker image and the Singularity image to a registry"
 	$(echotbl) "osg_build.tar"  "Build the Docker image and export it to a tar file"
-	$(echotbl) "clean"  "Delete build products"
+	$(echotbl) "clean"  "Delete created files. Does not delete the Docker image from the local cache"
 	$(echo)
 	$(echo) "Variables:"
 	$(echo)
@@ -53,7 +54,7 @@ all: $(OSG_BUILD_SIF) osg_build.tar
 push-all: push-sif push-docker
 
 clean:
-	-rm -f osg_build.tar $(OSG_BUILD_SIF) osg_build.tar.new
+	-rm -f osg_build.tar $(OSG_BUILD_SIF) $(OSG_BUILD_SIF).new osg_build.tar.new
 
 # $@ is the target; $< is the first dependency
 
@@ -66,7 +67,8 @@ osg_build.tar: Dockerfile input/* buildbuilder
 
 sif: $(OSG_BUILD_SIF)
 $(OSG_BUILD_SIF): osg_build.def osg_build.tar
-	$(SINGULARITY) build $@ $<
+	$(SINGULARITY) build $@.new $<
+	mv -f $@.new $@
 
 push-docker: osg_build.tar
 	$(DOCKER) login $(REGISTRY)
