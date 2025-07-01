@@ -16,7 +16,37 @@ OSG_BUILD_BRANCH="$(OSG_BUILD_BRANCH)" \
 ./buildbuilder
 endef
 
-.PHONY: all push-all clean push-sif push-docker
+echo:=@echo
+echotbl:=@printf "%-30s %s\n"
+define varhelp =
+@printf "%-30s %s [%s]\n" "$(1)" "$(2)" "$($(1))"
+endef
+
+.PHONY: all sif push-all clean push-sif push-docker help
+
+help:
+	$(echo) "Targets:"
+	$(echo)
+	$(echotbl) "build"  "Build the Docker image"
+	$(echotbl) "sif"  "Build the Singularity image"
+	$(echotbl) "all"  "Builds the SIF and the image"
+	$(echotbl) "push-docker"  "Push the Docker image to a Docker registry"
+	$(echotbl) "push-sif"  "Push the Singularity image to an ORAS registry"
+	$(echotbl) "push-all"  "Push both the Docker image and the Singularity image"
+	$(echotbl) "osg_build.tar"  "Build the image and export it to a tar file"
+	$(echotbl) "clean"  "Delete build products"
+	$(echo)
+	$(echo) "Variables:"
+	$(echo)
+	$(call varhelp,OSG_BUILD_IMAGE,The image tag to build)
+	$(call varhelp,OSG_BUILD_IMAGE_OLD,The old image tag to build; ignored if TAG_OLD is false)
+	$(call varhelp,OSG_BUILD_REPO,The GitHub org with the osg-build repo to pull the source from)
+	$(call varhelp,OSG_BUILD_BRANCH,The branch of osg-build to use)
+	$(call varhelp,OSG_BUILD_SIF,The name of the resulting Singularity image)
+	$(call varhelp,REGISTRY,The name of the Docker/ORAS registry to upload to)
+	$(call varhelp,TAG_OLD,Whether to also tag and push the image under the old name specified by OSG_BUILD_IMAGE_OLD)
+	$(call varhelp,DOCKER,The name of the 'docker' binary)
+	$(call varhelp,SINGULARITY,The name of the 'singularity' binary)
 
 all: $(OSG_BUILD_SIF) osg_build.tar
 
@@ -34,6 +64,7 @@ osg_build.tar: Dockerfile input/* buildbuilder
 	$(DOCKER) save -o $@.new "$(OSG_BUILD_IMAGE)"
 	mv -f $@.new $@
 
+sif: $(OSG_BUILD_SIF)
 $(OSG_BUILD_SIF): osg_build.def osg_build.tar
 	$(SINGULARITY) build $@ $<
 
