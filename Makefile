@@ -28,12 +28,12 @@ help:
 	$(echo) "Targets:"
 	$(echo)
 	$(echotbl) "build"  "Build the Docker image"
-	$(echotbl) "sif"  "Build the Singularity image"
-	$(echotbl) "all"  "Builds the SIF and the image"
-	$(echotbl) "push-docker"  "Push the Docker image to a Docker registry"
-	$(echotbl) "push-sif"  "Push the Singularity image to an ORAS registry"
-	$(echotbl) "push-all"  "Push both the Docker image and the Singularity image"
-	$(echotbl) "osg_build.tar"  "Build the image and export it to a tar file"
+	$(echotbl) "sif"  "Build the Singularity image (SIF)"
+	$(echotbl) "all"  "Build both the Docker image and the SIF"
+	$(echotbl) "push-docker"  "Push the Docker image to a registry using the docker:// protocol"
+	$(echotbl) "push-sif"  "Push the Singularity image to registry using the oras:// protocol"
+	$(echotbl) "push-all"  "Push both the Docker image and the Singularity image to a registry"
+	$(echotbl) "osg_build.tar"  "Build the Docker image and export it to a tar file"
 	$(echotbl) "clean"  "Delete build products"
 	$(echo)
 	$(echo) "Variables:"
