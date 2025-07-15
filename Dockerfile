@@ -42,7 +42,7 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
    install -d -o build -g build /home/build/.osg-koji
 
 ARG OSG_BUILD_BRANCH=V2-branch
-ARG OSG_BUILD_REPO=https://github.com/opensciencegrid/osg-build
+ARG OSG_BUILD_REPO=https://github.com/osg-htc/osg-build
 
 ARG RANDOM=
 # ^^ set this to $RANDOM to use RPMs from cache but install a fresh osg-build
