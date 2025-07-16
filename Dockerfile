@@ -36,6 +36,7 @@ RUN --mount=type=cache,id=dnf-9,target=/var/cache/dnf,sharing=locked \
    buildsys-macros \
    buildsys-srpm-build \
    'osg-build-deps >= 4' \
+   quilt \
    tini \
    && \
    useradd -u 1000 -G mock -d /home/build build && \
