@@ -6,7 +6,7 @@ OSG_BUILD_SIF ?= osg_build.sif
 DOCKER ?= docker
 SINGULARITY ?= singularity
 REGISTRY ?= hub.opensciencegrid.org
-TAG_OLD ?= true
+TAG_OLD ?= false
 
 define dobuild =
 DOCKER="$(DOCKER)" \
