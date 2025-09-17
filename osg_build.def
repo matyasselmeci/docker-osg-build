@@ -3,6 +3,7 @@ From: osg_build.tar
 
 %runscript
     #!/bin/bash
+    export SHELL=/bin/bash
     command=${1:-bash}
     shift
     exec "$command" "$@"
