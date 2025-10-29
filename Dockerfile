@@ -1,4 +1,4 @@
-ARG EL=9
+ARG EL=8
 
 FROM almalinux:${EL}
 ARG EL
